@@ -45,7 +45,6 @@ const MyComponent = () => {
   return (
     <div className="w-full h-full bg-[#f3f4f8]">
       {components?.map((block, key) => {
-        // console.log(block,"block")
         const style = {
           position: "absolute",
           left: block.x,
@@ -54,7 +53,7 @@ const MyComponent = () => {
         };
         return (
           <div key={key}>
-            <div style={style} onWheelCapture={onScroll} onClick={handleClick}>
+            <div style={style} onWheelCapture={onScroll}>
               <RenderComponents
                 onClick={() => handleClick(block)}
                 onWheelCapture={onScroll}
