@@ -1,38 +1,22 @@
 
+import React, { useEffect } from 'react';
 import useStore from './GlobalStore';
 import RenderComponents from './Just';
-import { useEffect, useState } from 'react';
 import Dialog from './closeModal';
 
 const MyComponent = () => {
   const {
     components,
     pos,
-    // setComponents,
-    // setPos,
+    setComponents,
+    isDialogOpen,
+    setPos,
     handleKeyDown,
     onScroll,
+    handleClick,
+    handleDialogClose,
+    selectedComponent,
   } = useStore();
-
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedComponent, setSelectedComponent] = useState(null);
-  // const [pos, setPos] = useState({ x: 0, y: 0, scale: 1 });
-  // function handleButtonClick(component: any) {
-  //   setIsDialogOpen(true);
-  //   setSelectedComponent(component);
-  // }
-
-  function handleClick(component) {
-    setIsDialogOpen(true);
-    setSelectedComponent(component);
-
-  }
-  function handleDialogClose() {
-    setIsDialogOpen(false);
-    setSelectedComponent(null);
-  }
-
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('wheel', onScroll);
@@ -40,39 +24,43 @@ const MyComponent = () => {
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('wheel', onScroll);
     };
-  }, [handleKeyDown, pos]);
+  }, [handleKeyDown, onScroll]);
 
   return (
-    <div className="w-full h-full bg-[#f3f4f8]">
+    <div className="bg-[#f3f4f8] h-full w-full fixed top-0 left-0 right-0 bottom-0 overflow-auto">
       {components?.map((block, key) => {
-        // console.log(block,"block")
         const style = {
-          position: "absolute",
+          position: 'absolute',
           left: block.x,
           top: block.y,
           transform: `translate(${pos.x}px, ${pos.y}px) scale(${pos.scale})`,
         };
         return (
-          <div key={key}>
-            <div style={style} onWheelCapture={onScroll} onClick={handleClick}>
-              <RenderComponents
-                onClick={() => handleClick(block)}
-                onWheelCapture={onScroll}
-                style={style}
-                {...block}
-              />
-            </div>
+          <div key={key} style={style} onWheelCapture={onScroll}>
+            <RenderComponents
+              onClick={() => handleClick(block.id, block.x, block.y)}
+              onWheelCapture={onScroll}
+              style={style}
+              {...block}
+            />
           </div>
         );
       })}
 
       <Dialog
         isOpen={isDialogOpen}
-        title="Popup Title"
+        title="Screen Name"
         onClose={handleDialogClose}
-        componentPosition={{ selectedComponent }}
+        componentPosition={selectedComponent}
       >
-        <p>This is the content of the popup.</p>
+        {/* {components?.map((pop: any) => (
+
+          <div>
+            <p>{pop.id}</p>
+
+          </div>
+        ))} */}
+        <div>df</div>
       </Dialog>
     </div>
   );
