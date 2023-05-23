@@ -1,5 +1,4 @@
-
-import {create} from 'zustand';
+import create from 'zustand';
 
 const initialComponents = [
   {
@@ -82,7 +81,6 @@ const useStore = create((set) => ({
       }));
     }
   },
- 
 
   handleClick: (id) => {
     const offsetX = 100;
@@ -101,6 +99,7 @@ const useStore = create((set) => ({
         ...component,
         x: component.x + offsetX - clickedComponent.x,
         y: component.y + offsetY - clickedComponent.y,
+        isActive: component.id === id, // Set isActive property to true for the clicked component, false for others
       }));
 
       return {

@@ -1,10 +1,18 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useStore from './GlobalStore';
 import RenderComponents from './Just';
 import Dialog from './closeModal';
 
 const MyComponent = () => {
+  const Dragcomponent = [
+    {
+      component: 'Button',
+      className: ['bg-green-500 px-3 py-1 text-white  rounded-md'],
+      value: 'save',
+      id: 'buttonn_b1',
+    }
+  ];
   const {
     components,
     pos,
@@ -17,6 +25,43 @@ const MyComponent = () => {
     handleDialogClose,
     selectedComponent,
   } = useStore();
+
+  const [dropComponent, setDropcomponent] = useState(Dragcomponent);
+
+  function componentLoop(componentData, id, newData) {
+    for (let i = 0; i < componentData.length; i++) {
+      const data = componentData[i];
+      if (data.id === id) {
+        console.log(data, 'data idss');
+        componentData[i]?.children?.push(newData);
+      } else if (data.children) {
+        const dataDrag = componentLoop(data.children, id, newData);
+      }
+    }
+  }
+  function drop(e) {
+    e.target.classList.remove('drag-over');
+    console.log(e.target.id);
+    e.preventDefault();
+    let data = e.dataTransfer.getData('item');
+    console.log(data, 'data');
+    let item = Dragcomponent.find((item) => item?.id === data);
+    console.log(item, 'item');
+    let newData = JSON.parse(JSON.stringify(item));
+
+    const targetComponent = components.find(
+      (component) => component.id === e.target.id
+    );
+    if (!targetComponent.isActive) {
+      return false; // Prevent drop if the target component is not active
+    }
+
+    e.target.classList.add('active-drop');
+    componentLoop(components, e.target.id, newData);
+    setDropcomponent(newData);
+    return false;
+  }
+
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('wheel', onScroll);
@@ -42,6 +87,8 @@ const MyComponent = () => {
               onWheelCapture={onScroll}
               style={style}
               {...block}
+              drop={drop}
+              active={block.isActive}
             />
           </div>
         );
@@ -53,14 +100,15 @@ const MyComponent = () => {
         onClose={handleDialogClose}
         componentPosition={selectedComponent}
       >
-        {/* {components?.map((pop: any) => (
-
-          <div>
-            <p>{pop.id}</p>
-
-          </div>
-        ))} */}
-        <div>df</div>
+        <div>
+          {Dragcomponent.map((block, key) => {
+            return (
+              <div key={key}>
+                <RenderComponents {...block} />
+              </div>
+            );
+          })}
+        </div>
       </Dialog>
     </div>
   );
