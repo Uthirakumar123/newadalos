@@ -9,7 +9,9 @@ const initialComponents = [
     ],
     children: [],
     x: 50,
-    y: 0,
+    y: 20,
+    width: 300,
+    tabletWidth: 600,
   },
   {
     component: 'Layout',
@@ -18,8 +20,10 @@ const initialComponents = [
       'min-w-[300px] min-h-[550px] m-1 fixed p-1 border overflow-auto flex bg-blue-200',
     ],
     children: [],
-    x: 275,
-    y: 0,
+    x: 405,
+    y: 20,
+    width: 300,
+    tabletWidth: 600,
   },
   {
     component: 'Layout',
@@ -28,8 +32,10 @@ const initialComponents = [
       'min-w-[300px] min-h-[550px] m-1 fixed p-1 border overflow-auto flex bg-red-200',
     ],
     children: [],
-    x: 500,
-    y: 0,
+    x: 750,
+    y: 20,
+    width: 300,
+    tabletWidth: 600,
   },
 ];
 
@@ -44,6 +50,7 @@ const useStore = create((set) => ({
   pos: { scale: 1, x: 0, y: 0 },
   selectedComponent: null,
   isDialogOpen: false,
+  // Arrow key function in left and right to top and botton move a components
   handleKeyDown: (e) => {
     const step = 10; // Step for arrow key movement
 
@@ -81,8 +88,8 @@ const useStore = create((set) => ({
       }));
     }
   },
-
-  handleClick: (id) => {
+  // HandleClick functioon open dialog and component id check to move the component 
+  handleClick: (id, rightPositionValue) => {
     const offsetX = 100;
     const offsetY = 20;
 
@@ -92,31 +99,107 @@ const useStore = create((set) => ({
       );
 
       if (!clickedComponent) {
-        return state; // Return the current state if the clicked component is not found
+        return state;
       }
 
       const updatedComponents = state.components.map((component) => ({
         ...component,
         x: component.x + offsetX - clickedComponent.x,
         y: component.y + offsetY - clickedComponent.y,
-        isActive: component.id === id, // Set isActive property to true for the clicked component, false for others
+        isActive: component.id === id,
       }));
+
+      const rightmostX = Math.max(
+        ...updatedComponents.map(
+          (component) => component.x + component.width + component.tabletWidth
+        )
+      );
+      const dialogRightX = rightmostX + rightPositionValue;
+
+      console.log('Active view:', state.activeView);
+      console.log('Rightmost x position:', rightmostX);
+      console.log('Dialog right side position:', dialogRightX);
 
       return {
         ...state,
         components: updatedComponents,
         selectedComponent: clickedComponent,
         isDialogOpen: true,
+        dialogRightX: dialogRightX,
       };
     });
   },
 
+
+  // Dialog close function
   handleDialogClose: () => {
     set((state) => ({
       isDialogOpen: false,
     }));
   },
+  // Tabletview component width and Height
+  tabletview: () => {
+    const tabletWidth = 600;
+    const tabletHeight = 800;
 
+    set((state) => {
+      const updatedComponents = state.components.map((component) => {
+        const newComponent = {
+          ...component,
+          style: {
+            ...component.style,
+            width: `${tabletWidth}px`,
+            height: `${tabletHeight}px`,
+            left: `${component.x}px`,
+            top: `${component.y}px`,
+          },
+        };
+
+        return newComponent;
+      });
+
+      // Get the rightmost x position of the updated components
+      const rightmostX = Math.max(
+        ...updatedComponents.map(
+          (component) => component.x + component.tabletWidth
+        )
+      );
+
+      console.log('Rightmost x positionefef:', rightmostX);
+
+      return {
+        ...state,
+        components: updatedComponents,
+      };
+    });
+
+    console.log('Active view: Tablet');
+  },
+
+  // Mobileview component width and Height
+  mobileview: () => {
+    const mobileWidth = 300;
+    const mobileHeight = 550;
+
+    set((state) => ({
+      components: state.components.map((component) => {
+        const newComponent = {
+          ...component,
+          style: {
+            ...component.style,
+            width: `${mobileWidth}px`,
+            height: `${mobileHeight}px`,
+            left: `${component.x}px`,
+            top: `${component.y}px`,
+          },
+        };
+
+        return newComponent;
+      }),
+    }));
+    console.log('Active view: Mobile');
+  },
+  // Scroll to Zoom a component 
   onScroll: (e) => {
     const delta = e.deltaY * -0.0001;
 

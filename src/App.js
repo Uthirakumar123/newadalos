@@ -24,8 +24,11 @@ const MyComponent = () => {
     handleClick,
     handleDialogClose,
     selectedComponent,
+    tabletview,
+    mobileview,
+    dialogRightX,
+    dialogPosition,
   } = useStore();
-
   const [dropComponent, setDropcomponent] = useState(Dragcomponent);
 
   function componentLoop(componentData, id, newData) {
@@ -73,6 +76,20 @@ const MyComponent = () => {
 
   return (
     <div className="bg-[#f3f4f8] h-full w-full fixed top-0 left-0 right-0 bottom-0 overflow-auto">
+      <div className='w-full h-10 fixed z-50 bg-[#d9def5] '>
+        <div className='flex justify-end mr-5 gap-2 '>
+          <div className='w-10 h-10 hover:bg-[#ccced8] flex justify-center items-center' onClick={mobileview}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" />
+            </svg>
+          </div>
+          <div className='w-10 h-10 hover:bg-[#ccced8] flex justify-center items-center' onClick={tabletview}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5h3m-6.75 2.25h10.5a2.25 2.25 0 002.25-2.25v-15a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 4.5v15a2.25 2.25 0 002.25 2.25z" />
+            </svg>
+          </div>
+        </div>
+      </div>
       {components?.map((block, key) => {
         const style = {
           position: 'absolute',
@@ -99,6 +116,7 @@ const MyComponent = () => {
         title="Screen Name"
         onClose={handleDialogClose}
         componentPosition={selectedComponent}
+        position={{ top: 100, left: 680, right: dialogRightX }}
       >
         <div>
           {Dragcomponent.map((block, key) => {
