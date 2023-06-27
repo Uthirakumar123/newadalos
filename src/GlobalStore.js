@@ -9,9 +9,11 @@ const initialComponents = [
     ],
     children: [],
     x: 50,
-    y: 20,
+    y: 40,
     width: 300,
     tabletWidth: 600,
+    mobileWidth: 300,
+
   },
   {
     component: 'Layout',
@@ -21,9 +23,10 @@ const initialComponents = [
     ],
     children: [],
     x: 405,
-    y: 20,
+    y: 40,
     width: 300,
     tabletWidth: 600,
+    mobileWidth: 300,
   },
   {
     component: 'Layout',
@@ -33,9 +36,11 @@ const initialComponents = [
     ],
     children: [],
     x: 750,
-    y: 20,
+    y: 40,
     width: 300,
     tabletWidth: 600,
+    mobileWidth: 300,
+
   },
 ];
 
@@ -90,8 +95,8 @@ const useStore = create((set) => ({
   },
   // HandleClick functioon open dialog and component id check to move the component 
   handleClick: (id, rightPositionValue) => {
-    const offsetX = 100;
-    const offsetY = 20;
+    const offsetX = 170;
+    const offsetY = 33;
 
     set((state) => {
       const clickedComponent = state.components.find(
@@ -111,14 +116,23 @@ const useStore = create((set) => ({
 
       const rightmostX = Math.max(
         ...updatedComponents.map(
-          (component) => component.x + component.width + component.tabletWidth
+          (component) => component.x + component.width - component.tabletWidth
         )
       );
+
       const dialogRightX = rightmostX + rightPositionValue;
 
       console.log('Active view:', state.activeView);
+      console.log('rightPositionValue:', rightPositionValue);
       console.log('Rightmost x position:', rightmostX);
-      console.log('Dialog right side position:', dialogRightX);
+      console.log('Dialog right side position 199813:', dialogRightX);
+
+      const rightPosX = rightmostX - 120;
+      console.log(rightPosX, "rightPosX");
+
+      const clickedComponentRightX =
+        clickedComponent.x + clickedComponent.width - clickedComponent.tabletWidth;
+      console.log(clickedComponentRightX, "clickedComponentRightX");
 
       return {
         ...state,
@@ -126,10 +140,11 @@ const useStore = create((set) => ({
         selectedComponent: clickedComponent,
         isDialogOpen: true,
         dialogRightX: dialogRightX,
+        rightmostX: rightPosX,
+        clickedComponentRightX: clickedComponentRightX,
       };
     });
   },
-
 
   // Dialog close function
   handleDialogClose: () => {
