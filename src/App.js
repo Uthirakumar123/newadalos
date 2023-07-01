@@ -8,9 +8,18 @@ const MyComponent = () => {
   const Dragcomponent = [
     {
       component: 'Button',
-      className: ['bg-green-500 px-3 py-1 text-white  rounded-md'],
+      className: [' px-3 bg-green-400  py-1 text-white  rounded-md'],
       value: 'save',
       id: 'buttonn_b1',
+      svgpath: (<svg x='8' y='70' width="109" height="40">
+        <rect x="0" y='0' width="109" height="40" rx='20' fill='#F3F4F6' />
+        <svg x="13" y="8" width="24" height="24" fill="#49454F">
+          <path d="M19 11h-6V5h-2v6H5v2h6v6h2v-6h6z" />
+        </svg>
+        <text x='45' y='25' fill="#49454F" fontSize="14px" fontWeight="500" >Button
+        </text>
+      </svg>
+      ),
     }
   ];
   const {
@@ -56,6 +65,7 @@ const MyComponent = () => {
     const targetComponent = components.find(
       (component) => component.id === e.target.id
     );
+
 
     if (!targetComponent.isActive) {
       return false; // Prevent drop if the target component is not active
@@ -201,6 +211,7 @@ const MyComponent = () => {
 
         children1={<div>
           {Dragcomponent.map((block, key) => {
+            console.log(block.path, "hfgh")
             return (
               <div key={key}>
                 <RenderComponents {...block} />

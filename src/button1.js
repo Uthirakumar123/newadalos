@@ -9,9 +9,16 @@ function dragStart(e) {
 const Button = ((props, ref) => {
     return (
         <div className="" ref={ref}>
-            <button {...props} draggable="true" onDragStart={dragStart}>
-                {props.value}
-            </button>
+            <div className='relative'>
+                <button {...props} draggable="true" onDragStart={dragStart}>
+                    {props.value}
+                </button>
+            </div>
+            <div className=' absolute'>
+                <svg width='100%' height='100%'>
+                    {props.svgpath}
+                </svg>
+            </div>
         </div>
     );
 });
